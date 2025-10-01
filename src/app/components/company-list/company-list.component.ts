@@ -508,7 +508,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
 
       .company-actions {
         position: absolute;
-        top: 1rem;
+        bottom: 1rem;
         right: 1rem;
         display: flex;
         gap: 0.5rem;
