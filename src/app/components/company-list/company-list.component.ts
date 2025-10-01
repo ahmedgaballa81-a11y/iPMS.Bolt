@@ -225,31 +225,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
                 {{ company.isActive ? "Active" : "Inactive" }}
               </span>
             </div>
-          </div>
-
-          <div class="company-details">
-            @if (company.phone) {
-            <div class="detail-item">
-              <span class="icon">📞</span>
-              <span class="value">{{ company.phone }}</span>
-            </div>
-            } @if (company.website) {
-            <div class="detail-item">
-              <span class="icon">🌐</span>
-              <span class="value">{{ company.website }}</span>
-            </div>
-            } @if (company.mobile) {
-            <div class="detail-item">
-              <span class="icon">📱</span>
-              <span class="value">{{ company.mobile }}</span>
-            </div>
-            } @if (company.mainAddress) {
-            <div class="detail-item">
-              <span class="icon">📍</span>
-              <span class="value">{{ company.mainAddress }}</span>
-            </div>
-            }
-          </div>
+          </div>          
 
           @if (company.description) {
           <div class="company-description">
