@@ -3,20 +3,11 @@
     <h2>Customers</h2>
     <div class="header-actions">
       <div class="view-toggle">
-        <button
-          class="toggle-btn"
-          [class.active]="viewMode === 'table'"
-          (click)="viewMode = 'table'"
-          title="Table View"
-        >
+        <button class="toggle-btn" [class.active]="viewMode === 'table'" (click)="viewMode = 'table'"
+          title="Table View">
           ☰
         </button>
-        <button
-          class="toggle-btn"
-          [class.active]="viewMode === 'cards'"
-          (click)="viewMode = 'cards'"
-          title="Card View"
-        >
+        <button class="toggle-btn" [class.active]="viewMode === 'cards'" (click)="viewMode = 'cards'" title="Card View">
           ⊞
         </button>
       </div>
@@ -32,34 +23,17 @@
       <form (ngSubmit)="createCustomer()">
         <div class="form-group">
           <label for="name">Name *</label>
-          <input
-            type="text"
-            id="name"
-            [(ngModel)]="newCustomer.name"
-            name="name"
-            required
-          />
+          <input type="text" id="name" [(ngModel)]="newCustomer.name" name="name" required />
         </div>
 
         <div class="form-group">
           <label for="email">Email *</label>
-          <input
-            type="email"
-            id="email"
-            [(ngModel)]="newCustomer.email"
-            name="email"
-            required
-          />
+          <input type="email" id="email" [(ngModel)]="newCustomer.email" name="email" required />
         </div>
 
         <div class="form-group">
           <label for="phone">Phone</label>
-          <input
-            type="tel"
-            id="phone"
-            [(ngModel)]="newCustomer.phone"
-            name="phone"
-          />
+          <input type="tel" id="phone" [(ngModel)]="newCustomer.phone" name="phone" />
         </div>
 
         <div class="form-actions">
@@ -113,37 +87,37 @@
   @if (viewMode === 'cards') {
   <div class="customers-grid">
     @for (customer of currentCustomers(); track customer.id) {
-      <div class="customer-card" (click)="selectCustomer(customer)">
-        <div class="customer-info">
-          <h3>{{ customer.name }}</h3>
-          <p class="email">{{ customer.email }}</p>
-          @if (customer.phone) {
-            <p>📞 {{ customer.phone }}</p>
-          }
-          @if (customer.address) {
-            <p>📍 {{ customer.address }}</p>
-          }
-        </div>
+    <div class="customer-card" (click)="selectCustomer(customer)">
+      <div class="customer-info">
+        <h3>{{ customer.name }}</h3>
+        <p class="email">{{ customer.email }}</p>
+        @if (customer.phone) {
+        <p>📞 {{ customer.phone }}</p>
+        }
+        @if (customer.address) {
+        <p>📍 {{ customer.address }}</p>
+        }
+      </div>
 
-        <div class="customer-stats">
-          <div class="stat">
-            <span class="count">{{ getProjectCount(customer.id) }}</span>
-            <span class="label">Companies</span>
-          </div>
-        </div>
-
-        <div class="customer-actions">
-          <button class="btn-icon" (click)="editCustomer(customer, $event)" title="Edit">✏️</button>
-          <button class="btn-icon delete" (click)="deleteCustomer(customer.id, $event)" title="Delete">🗑️</button>
+      <div class="customer-stats">
+        <div class="stat">
+          <span class="count">{{ getProjectCount(customer.id) }}</span>
+          <span class="label">Companies</span>
         </div>
       </div>
+
+      <div class="customer-actions">
+        <button class="btn-icon" (click)="editCustomer(customer, $event)" title="Edit">✏️</button>
+        <button class="btn-icon delete" (click)="deleteCustomer(customer.id, $event)" title="Delete">🗑️</button>
+      </div>
+    </div>
     }
   </div>
   }
 
   @if (currentCustomers().length === 0) {
-    <div class="empty-state">
-      <p>No customers yet. Create your first customer to get started!</p>
-    </div>
+  <div class="empty-state">
+    <p>No customers yet. Create your first customer to get started!</p>
+  </div>
   }
 </div>
