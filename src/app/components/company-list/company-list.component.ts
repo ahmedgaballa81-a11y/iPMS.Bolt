@@ -13,9 +13,29 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
     <div class="company-list">
       <div class="header">
         <h2>Companies</h2>
-        <button class="btn btn-primary" (click)="toggleCreateForm()">
-          Add Company
-        </button>
+        <div class="header-actions">
+          <div class="view-toggle">
+            <button
+              class="toggle-btn"
+              [class.active]="viewMode === 'table'"
+              (click)="viewMode = 'table'"
+              title="Table View"
+            >
+              ☰
+            </button>
+            <button
+              class="toggle-btn"
+              [class.active]="viewMode === 'cards'"
+              (click)="viewMode = 'cards'"
+              title="Card View"
+            >
+              ⊞
+            </button>
+          </div>
+          <button class="btn btn-primary" (click)="toggleCreateForm()">
+            Add Company
+          </button>
+        </div>
       </div>
 
       <div class="create-form" [class.visible]="showCreateForm">
@@ -204,6 +224,80 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         </div>
       </div>
 
+      @if (viewMode === 'table') {
+      <div class="table-container">
+        <table class="companies-table">
+          <thead>
+            <tr>
+              <th>Company Name</th>
+              <th>Customer</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Activity</th>
+              <th>Projects</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (company of dataService.allCompanies(); track company.id) {
+            <tr class="table-row" (click)="selectCompany(company)">
+              <td class="company-name">
+                <strong>{{ company.name }}</strong>
+              </td>
+              <td>{{ getCustomerName(company.customerId) }}</td>
+              <td class="email-cell">{{ company.email }}</td>
+              <td>{{ company.phone || '-' }}</td>
+              <td>
+                @if (company.activityId) {
+                <span class="industry-tag">{{
+                  getActivityName(company.activityId)
+                }}</span>
+                } @else {
+                <span>-</span>
+                }
+              </td>
+              <td class="centered">
+                <span class="project-count">{{
+                  dataService.getProjectsByCompany(company.id).length
+                }}</span>
+              </td>
+              <td>
+                <span class="status" [class.active]="company.isActive">
+                  {{ company.isActive ? "Active" : "Inactive" }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button
+                  class="btn-icon"
+                  (click)="toggleCompanyStatus(company, $event)"
+                  [title]="company.isActive ? 'Deactivate' : 'Activate'"
+                >
+                  {{ company.isActive ? "⏸️" : "▶️" }}
+                </button>
+                <button
+                  class="btn-icon"
+                  (click)="editCompany(company, $event)"
+                  title="Edit"
+                >
+                  ✏️
+                </button>
+                <button
+                  class="btn-icon delete"
+                  (click)="deleteCompany(company.id, $event)"
+                  title="Delete"
+                >
+                  🗑️
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+
+      @if (viewMode === 'cards') {
       <div class="companies-grid">
         @for (company of dataService.allCompanies(); track company.id) {
         <div class="company-card" (click)="selectCompany(company)">
@@ -226,8 +320,6 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
               </span>
             </div>
           </div>
-
-          
 
           @if (company.description) {
           <div class="company-description">
@@ -270,6 +362,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         </div>
         }
       </div>
+      }
 
       @if (dataService.allCompanies().length === 0) {
       <div class="empty-state">
@@ -298,6 +391,42 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         margin: 0;
         font-size: 2rem;
         font-weight: 600;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .view-toggle {
+        display: flex;
+        gap: 0.5rem;
+        background: var(--surface-elevated);
+        padding: 0.25rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      .toggle-btn {
+        background: transparent;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        transition: all 0.2s;
+      }
+
+      .toggle-btn:hover {
+        background: var(--surface);
+        color: var(--text-primary);
+      }
+
+      .toggle-btn.active {
+        background: var(--primary);
+        color: white;
       }
 
       .create-form {
@@ -353,6 +482,82 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       .form-group textarea:focus {
         outline: none;
         border-color: var(--primary);
+      }
+
+      .table-container {
+        background: var(--surface);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+      }
+
+      .companies-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .companies-table thead {
+        background: var(--surface-elevated);
+        border-bottom: 2px solid var(--border);
+      }
+
+      .companies-table th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .companies-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.2s;
+        cursor: pointer;
+      }
+
+      .companies-table tbody tr:hover {
+        background: var(--surface-elevated);
+      }
+
+      .companies-table tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      .companies-table td {
+        padding: 1rem;
+        color: var(--text-primary);
+      }
+
+      .company-name {
+        color: var(--text-primary);
+      }
+
+      .email-cell {
+        color: var(--primary);
+      }
+
+      .centered {
+        text-align: center;
+      }
+
+      .project-count {
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .actions-cell {
+        text-align: right;
+      }
+
+      .actions-cell .btn-icon {
+        margin-left: 0.25rem;
       }
 
       .companies-grid {
@@ -576,12 +781,24 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
           align-items: stretch;
         }
 
+        .header-actions {
+          flex-direction: column;
+        }
+
         .form-row {
           grid-template-columns: 1fr;
         }
 
         .company-actions {
           opacity: 1;
+        }
+
+        .table-container {
+          overflow-x: auto;
+        }
+
+        .companies-table {
+          min-width: 800px;
         }
       }
     `,
@@ -591,6 +808,7 @@ export class CompanyListComponent {
   public dataService = inject(DataService);
   private navigationService = inject(NavigationService);
 
+  viewMode: 'table' | 'cards' = 'cards';
   showCreateForm = false;
   newCompany: CreateCompanyRequest = {
     name: "",
