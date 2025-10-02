@@ -2,6 +2,18 @@
   <div class="header">
     <h2>Customers</h2>
     <div class="header-actions">
+      <div class="filter-control">
+        <input type="text" list="customerNames" [(ngModel)]="filterName" placeholder="Filter by customer name" />
+        <datalist id="customerNames">
+          @for (c of currentCustomers(); track c.id) {
+          <option [value]="c.name"></option>
+          }
+        </datalist>
+        @if (filterName) {
+        <button class="clear-filter" type="button" (click)="clearFilter()" title="Clear filter">✖</button>
+        }
+      </div>
+      
       <div class="view-toggle">
         <button class="toggle-btn" [class.active]="viewMode === 'table'" (click)="viewMode = 'table'"
           title="Table View">
@@ -11,6 +23,7 @@
           ⊞
         </button>
       </div>
+      
       <button class="btn btn-primary" (click)="toggleCreateForm()">
         ➕ Add Customer
       </button>
@@ -62,7 +75,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (customer of currentCustomers(); track customer.id) {
+        @for (customer of filteredCustomers(); track customer.id) {
         <tr class="table-row" (click)="selectCustomer(customer)">
           <td class="customer-name">
             <strong>{{ customer.name }}</strong>
@@ -86,7 +99,7 @@
 
   @if (viewMode === 'cards') {
   <div class="customers-grid">
-    @for (customer of currentCustomers(); track customer.id) {
+    @for (customer of filteredCustomers(); track customer.id) {
     <div class="customer-card" (click)="selectCustomer(customer)">
       <div class="customer-info">
         <h3>{{ customer.name }}</h3>
