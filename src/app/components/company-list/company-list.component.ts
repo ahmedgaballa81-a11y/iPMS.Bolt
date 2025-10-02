@@ -247,7 +247,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
               </td>
               <td>{{ getCustomerName(company.customerId) }}</td>
               <td class="email-cell">{{ company.email }}</td>
-              <td>{{ company.phone || '-' }}</td>
+              <td>{{ company.phone || "-" }}</td>
               <td>
                 @if (company.activityId) {
                 <span class="industry-tag">{{
@@ -295,9 +295,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
           </tbody>
         </table>
       </div>
-      }
-
-      @if (viewMode === 'cards') {
+      } @if (viewMode === 'cards') {
       <div class="companies-grid">
         @for (company of dataService.allCompanies(); track company.id) {
         <div class="company-card" (click)="selectCompany(company)">
@@ -362,9 +360,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         </div>
         }
       </div>
-      }
-
-      @if (dataService.allCompanies().length === 0) {
+      } @if (dataService.allCompanies().length === 0) {
       <div class="empty-state">
         <p>No companies yet. Create your first company to get started!</p>
       </div>
@@ -375,7 +371,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
     `
       .company-list {
         padding: 2rem;
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
       }
 
@@ -808,7 +804,7 @@ export class CompanyListComponent {
   public dataService = inject(DataService);
   private navigationService = inject(NavigationService);
 
-  viewMode: 'table' | 'cards' = 'cards';
+  viewMode: "table" | "cards" = "cards";
   showCreateForm = false;
   newCompany: CreateCompanyRequest = {
     name: "",
