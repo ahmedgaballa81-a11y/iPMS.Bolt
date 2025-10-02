@@ -12,7 +12,7 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
   template: `
     <div class="all-projects">
       <div class="header">
-        <h2>All Projects</h2>
+        <h2>Projects</h2>
         <div class="header-actions">
           <div class="view-toggle">
             <button
