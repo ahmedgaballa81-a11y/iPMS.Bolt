@@ -33,7 +33,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
             </button>
           </div>
           <button class="btn btn-primary" (click)="toggleCreateForm()">
-            Add Company
+            ➕ Add Company
           </button>
         </div>
       </div>
