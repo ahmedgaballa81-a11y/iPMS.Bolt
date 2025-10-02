@@ -62,6 +62,42 @@ import { Customer, CreateCustomerRequest } from '../../models/customer.model';
       font-weight: 600;
     }
 
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--surface-elevated);
+      padding: 0.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+
+    .toggle-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
     .create-form {
       margin-bottom: 2rem;
       max-height: 0;
@@ -115,6 +151,82 @@ import { Customer, CreateCustomerRequest } from '../../models/customer.model';
       display: flex;
       gap: 1rem;
       justify-content: flex-end;
+    }
+
+    .table-container {
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+
+    .customers-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .customers-table thead {
+      background: var(--surface-elevated);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .customers-table th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .customers-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .customers-table tbody tr:hover {
+      background: var(--surface-elevated);
+    }
+
+    .customers-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .customers-table td {
+      padding: 1rem;
+      color: var(--text-primary);
+    }
+
+    .customer-name {
+      color: var(--text-primary);
+    }
+
+    .email-cell {
+      color: var(--primary);
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    .company-count {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .actions-cell {
+      text-align: right;
+    }
+
+    .actions-cell .btn-icon {
+      margin-left: 0.25rem;
     }
 
     .customers-grid {
@@ -282,8 +394,20 @@ import { Customer, CreateCustomerRequest } from '../../models/customer.model';
         align-items: stretch;
       }
 
+      .header-actions {
+        flex-direction: column;
+      }
+
       .customer-actions {
         opacity: 1;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      .customers-table {
+        min-width: 700px;
       }
     }
   `]
@@ -292,6 +416,7 @@ export class CustomerListComponent {
   public dataService = inject(DataService);
   private navigationService = inject(NavigationService);
 
+  viewMode: 'table' | 'cards' = 'cards';
   showCreateForm = false;
   newCustomer: CreateCustomerRequest = {
     name: '',

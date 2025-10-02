@@ -1,9 +1,29 @@
 <div class="customer-list">
   <div class="header">
     <h2>Customers</h2>
-    <button class="btn btn-primary" (click)="toggleCreateForm()">
-      ➕ Add Customer
-    </button>
+    <div class="header-actions">
+      <div class="view-toggle">
+        <button
+          class="toggle-btn"
+          [class.active]="viewMode === 'table'"
+          (click)="viewMode = 'table'"
+          title="Table View"
+        >
+          ☰
+        </button>
+        <button
+          class="toggle-btn"
+          [class.active]="viewMode === 'cards'"
+          (click)="viewMode = 'cards'"
+          title="Card View"
+        >
+          ⊞
+        </button>
+      </div>
+      <button class="btn btn-primary" (click)="toggleCreateForm()">
+        ➕ Add Customer
+      </button>
+    </div>
   </div>
 
   <div class="create-form" [class.visible]="showCreateForm">
@@ -54,6 +74,43 @@
     </div>
   </div>
 
+  @if (viewMode === 'table') {
+  <div class="table-container">
+    <table class="customers-table">
+      <thead>
+        <tr>
+          <th>Customer Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Companies</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (customer of currentCustomers(); track customer.id) {
+        <tr class="table-row" (click)="selectCustomer(customer)">
+          <td class="customer-name">
+            <strong>{{ customer.name }}</strong>
+          </td>
+          <td class="email-cell">{{ customer.email }}</td>
+          <td>{{ customer.phone || '-' }}</td>
+          <td>{{ customer.address || '-' }}</td>
+          <td class="centered">
+            <span class="company-count">{{ getProjectCount(customer.id) }}</span>
+          </td>
+          <td class="actions-cell">
+            <button class="btn-icon" (click)="editCustomer(customer, $event)" title="Edit">✏️</button>
+            <button class="btn-icon delete" (click)="deleteCustomer(customer.id, $event)" title="Delete">🗑️</button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+
+  @if (viewMode === 'cards') {
   <div class="customers-grid">
     @for (customer of currentCustomers(); track customer.id) {
       <div class="customer-card" (click)="selectCustomer(customer)">
@@ -82,6 +139,7 @@
       </div>
     }
   </div>
+  }
 
   @if (currentCustomers().length === 0) {
     <div class="empty-state">
