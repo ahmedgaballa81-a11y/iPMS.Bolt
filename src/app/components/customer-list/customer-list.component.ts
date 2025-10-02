@@ -1,392 +1,52 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { DataService } from "../../services/data.service";
 import { NavigationService } from "../../services/navigation.service";
-import { Company, CreateCompanyRequest } from "../../models/company.model";
+import { Customer, CreateCustomerRequest } from "../../models/customer.model";
 
 @Component({
-  selector: "app-company-list",
+  selector: "app-customer-list",
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="company-list">
-      <div class="header">
-        <h2>Companies</h2>
-        <div class="header-actions">
-          <div class="filter-control">
-            <input
-              type="text"
-              list="companyNames"
-              [(ngModel)]="filterName"
-              placeholder="Filter by company name"
-            />
-            <datalist id="companyNames">
-              @for (c of dataService.allCompanies(); track c.id) {
-              <option [value]="c.name"></option>
-              }
-            </datalist>
-            @if (filterName) {
-            <button
-              class="clear-filter"
-              type="button"
-              (click)="clearFilter()"
-              title="Clear filter"
-            >
-              ✖
-            </button>
-            }
-          </div>
-          
-          <div class="view-toggle">
-            <button
-              class="toggle-btn"
-              [class.active]="viewMode === 'table'"
-              (click)="viewMode = 'table'"
-              title="Table View"
-            >
-              ☰
-            </button>
-            <button
-              class="toggle-btn"
-              [class.active]="viewMode === 'cards'"
-              (click)="viewMode = 'cards'"
-              title="Card View"
-            >
-              ⊞
-            </button>
-          </div>
-
-          <button class="btn btn-primary" (click)="toggleCreateForm()">
-            ➕ Add Company
-          </button>
-        </div>
-      </div>
-
-      <div class="create-form" [class.visible]="showCreateForm">
-        <div class="form-card">
-          <h3>Add New Company</h3>
-          <form (ngSubmit)="createCompany()">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="customer">Customer *</label>
-                <select
-                  id="customer"
-                  [(ngModel)]="newCompany.customerId"
-                  name="customer"
-                  required
-                >
-                  <option value="">Select Customer</option>
-                  @for (customer of dataService.allCustomers(); track
-                  customer.id) {
-                  <option [value]="customer.id">{{ customer.name }}</option>
-                  }
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="name">Company Name *</label>
-                <input
-                  type="text"
-                  id="name"
-                  [(ngModel)]="newCompany.name"
-                  name="name"
-                  required
-                />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="email">Email *</label>
-                <input
-                  type="email"
-                  id="email"
-                  [(ngModel)]="newCompany.email"
-                  name="email"
-                  required
-                />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="phone">Phone</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  [(ngModel)]="newCompany.phone"
-                  name="phone"
-                />
-              </div>
-              <div class="form-group">
-                <label for="mobile">Mobile</label>
-                <input
-                  type="tel"
-                  id="mobile"
-                  [(ngModel)]="newCompany.mobile"
-                  name="mobile"
-                />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="website">Website</label>
-                <input
-                  type="url"
-                  id="website"
-                  [(ngModel)]="newCompany.website"
-                  name="website"
-                />
-              </div>
-              <div class="form-group">
-                <label for="activity">Activity</label>
-                <select
-                  id="activity"
-                  [(ngModel)]="newCompany.activityId"
-                  name="activity"
-                >
-                  <option value="">Select Activity</option>
-                  @for (activity of dataService.allActivities(); track
-                  activity.id) {
-                  <option [value]="activity.id">{{ activity.name }}</option>
-                  }
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="mainAddress">Main Address</label>
-              <input
-                type="text"
-                id="mainAddress"
-                [(ngModel)]="newCompany.mainAddress"
-                name="mainAddress"
-              />
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="taxRegistrationNumber"
-                  >Tax Registration Number</label
-                >
-                <input
-                  type="text"
-                  id="taxRegistrationNumber"
-                  [(ngModel)]="newCompany.taxRegistrationNumber"
-                  name="taxRegistrationNumber"
-                />
-              </div>
-              <div class="form-group">
-                <label for="taxAuthority">Tax Authority</label>
-                <input
-                  type="text"
-                  id="taxAuthority"
-                  [(ngModel)]="newCompany.taxAuthority"
-                  name="taxAuthority"
-                />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="taxCardData">Tax Card Data</label>
-                <input
-                  type="text"
-                  id="taxCardData"
-                  [(ngModel)]="newCompany.taxCardData"
-                  name="taxCardData"
-                />
-              </div>
-              <div class="form-group">
-                <label for="commercialRegisterData"
-                  >Commercial Register Data</label
-                >
-                <input
-                  type="text"
-                  id="commercialRegisterData"
-                  [(ngModel)]="newCompany.commercialRegisterData"
-                  name="commercialRegisterData"
-                />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="importCardData">Import Card Data</label>
-                <input
-                  type="text"
-                  id="importCardData"
-                  [(ngModel)]="newCompany.importCardData"
-                  name="importCardData"
-                />
-              </div>
-              <div class="form-group">
-                <label for="exportCardData">Export Card Data</label>
-                <input
-                  type="text"
-                  id="exportCardData"
-                  [(ngModel)]="newCompany.exportCardData"
-                  name="exportCardData"
-                />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="description">Description</label>
-              <textarea
-                id="description"
-                [(ngModel)]="newCompany.description"
-                name="description"
-                rows="3"
-              ></textarea>
-            </div>
-            <div class="form-actions">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="toggleCreateForm()"
-              >
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-primary">
-                Create Company
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      @if (viewMode === 'table') {
-      <div class="table-container">
-        <table class="companies-table">
-          <thead>
-            <tr>
-              <th>Company Name</th>
-              <th>Customer</th>
-              <th>Activity</th>
-              <th>Projects</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (company of filteredCompanies(); track company.id) {
-            <tr class="table-row" (click)="selectCompany(company)">
-              <td class="company-name">
-                <strong>{{ company.name }}</strong>
-              </td>
-              <td>{{ getCustomerName(company.customerId) }}</td>
-              <td>
-                @if (company.activityId) {
-                <span class="industry-tag">{{
-                  getActivityName(company.activityId)
-                }}</span>
-                } @else {
-                <span>-</span>
-                }
-              </td>
-              <td class="centered">
-                <span class="project-count">{{
-                  dataService.getProjectsByCompany(company.id).length
-                }}</span>
-              </td>
-              <td>
-                <span class="status" [class.active]="company.isActive">
-                  {{ company.isActive ? "Active" : "Inactive" }}
-                </span>
-              </td>
-              <td class="actions-cell">
-                <button
-                  class="btn-icon"
-                  (click)="toggleCompanyStatus(company, $event)"
-                  [title]="company.isActive ? 'Deactivate' : 'Activate'"
-                >
-                  {{ company.isActive ? "⏸️" : "▶️" }}
-                </button>
-                <button
-                  class="btn-icon"
-                  (click)="editCompany(company, $event)"
-                  title="Edit"
-                >
-                  ✏️
-                </button>
-                <button
-                  class="btn-icon delete"
-                  (click)="deleteCompany(company.id, $event)"
-                  title="Delete"
-                >
-                  🗑️
-                </button>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-      } @if (viewMode === 'cards') {
-      <div class="companies-grid">
-        @for (company of filteredCompanies(); track company.id) {
-        <div class="company-card" (click)="selectCompany(company)">
-          <div class="company-header">
-            <div class="company-info">
-              <h3>{{ company.name }}</h3>
-              <p class="customer-name">
-                {{ getCustomerName(company.customerId) }}
-              </p>
-              @if (company.activityId) {
-              <span class="industry-tag">{{
-                getActivityName(company.activityId)
-              }}</span>
-              }
-            </div>
-            <div class="company-status">
-              <span class="status" [class.active]="company.isActive">
-                {{ company.isActive ? "Active" : "Inactive" }}
-              </span>
-            </div>
-          </div>
-
-          <div class="company-stats">
-            <div class="stat">
-              <span class="count">{{
-                dataService.getProjectsByCompany(company.id).length
-              }}</span>
-              <span class="label">Projects</span>
-            </div>
-          </div>
-
-          <div class="company-actions">
-            <button
-              class="btn-icon"
-              (click)="toggleCompanyStatus(company, $event)"
-              [title]="company.isActive ? 'Deactivate' : 'Activate'"
-            >
-              {{ company.isActive ? "⏸️" : "▶️" }}
-            </button>
-            <button
-              class="btn-icon"
-              (click)="editCompany(company, $event)"
-              title="Edit"
-            >
-              ✏️
-            </button>
-            <button
-              class="btn-icon delete"
-              (click)="deleteCompany(company.id, $event)"
-              title="Delete"
-            >
-              🗑️
-            </button>
-          </div>
-        </div>
-        }
-      </div>
-      } @if (dataService.allCompanies().length === 0) {
-      <div class="empty-state">
-        <p>No companies yet. Create your first company to get started!</p>
-      </div>
-      }
-    </div>
-  `,
+  templateUrl: "./customer-list.component.html",
   styles: [
     `
-      .company-list {
+      .customer-list {
         padding: 2rem;
         max-width: 1400px;
         margin: 0 auto;
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .breadcrumb-item {
+        background: none;
+        border: none;
+        color: var(--primary);
+        cursor: pointer;
+        text-decoration: none;
+        font-size: inherit;
+        padding: 0;
+      }
+
+      .breadcrumb-item:hover {
+        text-decoration: underline;
+      }
+
+      .breadcrumb-separator {
+        color: var(--text-secondary);
+      }
+
+      .breadcrumb-current {
+        color: var(--text-primary);
+        font-weight: 600;
       }
 
       .header {
@@ -439,39 +99,6 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         color: white;
       }
 
-      .filter-control {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--surface-elevated);
-        padding: 0.25rem 0.5rem;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-      }
-
-      .filter-control input[type="text"] {
-        border: none;
-        background: transparent;
-        padding: 0.4rem 0.5rem;
-        outline: none;
-        min-width: 220px;
-        color: var(--text-primary);
-      }
-
-      .clear-filter {
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        border-radius: 6px;
-        padding: 0.25rem 0.5rem;
-      }
-
-      .clear-filter:hover {
-        background: var(--surface);
-        color: var(--text-primary);
-      }
-
       .create-form {
         margin-bottom: 2rem;
         max-height: 0;
@@ -480,7 +107,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       }
 
       .create-form.visible {
-        max-height: 1200px;
+        max-height: 600px;
       }
 
       .form-card {
@@ -491,10 +118,9 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         border: 1px solid var(--border);
       }
 
-      .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+      .form-card h3 {
+        margin: 0 0 1.5rem 0;
+        color: var(--text-primary);
       }
 
       .form-group {
@@ -508,23 +134,24 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         font-weight: 500;
       }
 
-      .form-group input,
-      .form-group select,
-      .form-group textarea {
+      .form-group input {
         width: 100%;
         padding: 0.75rem;
         border: 2px solid var(--border);
         border-radius: 8px;
         font-size: 1rem;
         transition: border-color 0.2s;
-        font-family: inherit;
       }
 
-      .form-group input:focus,
-      .form-group select:focus,
-      .form-group textarea:focus {
+      .form-group input:focus {
         outline: none;
         border-color: var(--primary);
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
       }
 
       .table-container {
@@ -535,17 +162,17 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         border: 1px solid var(--border);
       }
 
-      .companies-table {
+      .customers-table {
         width: 100%;
         border-collapse: collapse;
       }
 
-      .companies-table thead {
+      .customers-table thead {
         background: var(--surface-elevated);
         border-bottom: 2px solid var(--border);
       }
 
-      .companies-table th {
+      .customers-table th {
         padding: 1rem;
         text-align: left;
         font-weight: 600;
@@ -555,26 +182,26 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         letter-spacing: 0.5px;
       }
 
-      .companies-table tbody tr {
+      .customers-table tbody tr {
         border-bottom: 1px solid var(--border);
         transition: background 0.2s;
         cursor: pointer;
       }
 
-      .companies-table tbody tr:hover {
+      .customers-table tbody tr:hover {
         background: var(--surface-elevated);
       }
 
-      .companies-table tbody tr:last-child {
+      .customers-table tbody tr:last-child {
         border-bottom: none;
       }
 
-      .companies-table td {
+      .customers-table td {
         padding: 1rem;
         color: var(--text-primary);
       }
 
-      .company-name {
+      .customer-name {
         color: var(--text-primary);
       }
 
@@ -586,7 +213,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         text-align: center;
       }
 
-      .project-count {
+      .company-count {
         background: var(--primary-light);
         color: var(--primary);
         padding: 0.25rem 0.75rem;
@@ -603,16 +230,16 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         margin-left: 0.25rem;
       }
 
-      .companies-grid {
+      .customers-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 1.5rem;
       }
 
-      .company-card {
+      .customer-card {
         background: var(--surface);
         border-radius: 12px;
-        padding: 1rem;
+        padding: 1.5rem;
         box-shadow: var(--shadow-sm);
         border: 1px solid var(--border);
         cursor: pointer;
@@ -620,101 +247,37 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         position: relative;
       }
 
-      .company-card:hover {
+      .customer-card:hover {
         transform: translateY(-2px);
         box-shadow: var(--shadow-lg);
         border-color: var(--primary);
       }
 
-      .company-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-      }
-
-      .company-info h3 {
+      .customer-info h3 {
         margin: 0 0 0.5rem 0;
         color: var(--text-primary);
-        font-size: 1.1rem;
+        font-size: 1.25rem;
       }
 
-      .company-info .email {
-        margin: 0 0 0.5rem 0;
-        color: var(--primary);
+      .customer-info p {
+        margin: 0.25rem 0;
+        color: var(--text-secondary);
         font-size: 0.9rem;
-      }
-
-      .company-info .customer-name {
-        margin: 0 0 0.5rem 0;
-        color: var(--secondary);
-        font-size: 0.9rem;
-        font-weight: 500;
-      }
-
-      .industry-tag {
-        background: var(--secondary-light);
-        color: var(--secondary);
-        padding: 0.25rem 0.5rem;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        font-weight: 500;
-      }
-
-      .status {
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        background: var(--error-light);
-        color: var(--error);
-      }
-
-      .status.active {
-        background: var(--success-light);
-        color: var(--success);
-      }
-
-      .company-details {
-        margin-bottom: 0.5rem;
-      }
-
-      .detail-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        margin-bottom: 0.25rem;
       }
 
-      .detail-item .value {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
+      .customer-info .email {
+        color: var(--primary);
       }
 
-      .company-description {
-        background: var(--surface-elevated);
-        padding: 0.5rem;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-      }
-
-      .company-description p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-style: italic;
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-
-      .company-stats {
-        display: flex;
-        gap: 1rem;
-        padding-top: 0.5rem;
+      .customer-stats {
+        margin-top: 1rem;
+        padding-top: 1rem;
         border-top: 1px solid var(--border);
-        margin-bottom: 0.5rem;
+        display: flex;
+        gap: 2rem;
       }
 
       .stat {
@@ -724,7 +287,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       }
 
       .stat .count {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         font-weight: 600;
         color: var(--primary);
       }
@@ -736,7 +299,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         letter-spacing: 0.5px;
       }
 
-      .company-actions {
+      .customer-actions {
         position: absolute;
         bottom: 1rem;
         right: 1rem;
@@ -746,7 +309,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         transition: opacity 0.2s;
       }
 
-      .company-card:hover .company-actions {
+      .customer-card:hover .customer-actions {
         opacity: 1;
       }
 
@@ -772,6 +335,17 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         background: var(--error);
       }
 
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-secondary);
+      }
+
+      .empty-state p {
+        font-size: 1.1rem;
+        margin: 0;
+      }
+
       .btn {
         padding: 0.75rem 1.5rem;
         border: none;
@@ -780,6 +354,11 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         font-weight: 500;
         cursor: pointer;
         transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
       }
 
       .btn-primary {
@@ -797,24 +376,16 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         border: 1px solid var(--border);
       }
 
-      .form-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: flex-end;
-      }
-
-      .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: var(--text-secondary);
+      .btn-secondary:hover {
+        background: var(--background);
       }
 
       @media (max-width: 768px) {
-        .company-list {
+        .customer-list {
           padding: 1rem;
         }
 
-        .companies-grid {
+        .customers-grid {
           grid-template-columns: 1fr;
         }
 
@@ -828,11 +399,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
           flex-direction: column;
         }
 
-        .form-row {
-          grid-template-columns: 1fr;
-        }
-
-        .company-actions {
+        .customer-actions {
           opacity: 1;
         }
 
@@ -840,37 +407,28 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
           overflow-x: auto;
         }
 
-        .companies-table {
-          min-width: 800px;
+        .customers-table {
+          min-width: 700px;
         }
       }
     `,
   ],
 })
-export class CompanyListComponent {
+export class CustomerListComponent {
   public dataService = inject(DataService);
   private navigationService = inject(NavigationService);
 
   viewMode: "table" | "cards" = "cards";
   showCreateForm = false;
-  filterName = "";
-  newCompany: CreateCompanyRequest = {
+  newCustomer: CreateCustomerRequest = {
     name: "",
     email: "",
     phone: "",
-    mobile: "",
-    mainAddress: "",
-    website: "",
-    activityId: "",
-    description: "",
-    customerId: "",
-    taxRegistrationNumber: "",
-    taxAuthority: "",
-    taxCardData: "",
-    commercialRegisterData: "",
-    importCardData: "",
-    exportCardData: "",
   };
+
+  readonly currentCustomers = computed(() => this.dataService.allCustomers());
+
+  ngOnInit(): void {}
 
   toggleCreateForm(): void {
     this.showCreateForm = !this.showCreateForm;
@@ -879,104 +437,50 @@ export class CompanyListComponent {
     }
   }
 
-  createCompany(): void {
-    if (
-      this.newCompany.name &&
-      this.newCompany.email &&
-      this.newCompany.customerId
-    ) {
+  createCustomer(): void {
+    if (this.newCustomer.name && this.newCustomer.email) {
       this.dataService
-        .createCompany(this.newCompany)
+        .createCustomer(this.newCustomer)
         .then(() => {
           this.resetForm();
           this.showCreateForm = false;
         })
         .catch((error) => {
-          console.error("Failed to create company:", error);
-          alert("Failed to create company. Please try again.");
+          console.error("Failed to create customer:", error);
+          alert("Failed to create customer. Please try again.");
         });
     }
   }
 
-  selectCompany(company: Company): void {
-    this.navigationService.navigateToProjects(company.customerId, company.id);
+  selectCustomer(customer: Customer): void {
+    this.navigationService.navigateToCompanies(customer.id);
   }
 
-  toggleCompanyStatus(company: Company, event: Event): void {
+  editCustomer(customer: Customer, event: Event): void {
     event.stopPropagation();
-    this.dataService
-      .updateCompany(company.id, { isActive: !company.isActive })
-      .catch((error) => {
-        console.error("Failed to update company:", error);
-        alert("Failed to update company. Please try again.");
-      });
+    // Implement edit functionality
+    console.log("Edit customer:", customer);
   }
 
-  editCompany(company: Company, event: Event): void {
+  deleteCustomer(customerId: string, event: Event): void {
     event.stopPropagation();
-    console.log("Edit company:", company);
-  }
-
-  deleteCompany(companyId: string, event: Event): void {
-    event.stopPropagation();
-    if (
-      confirm(
-        "Are you sure you want to delete this company? This will also delete all associated customers and projects."
-      )
-    ) {
-      this.dataService.deleteCompany(companyId).catch((error) => {
-        console.error("Failed to delete company:", error);
-        alert("Failed to delete company. Please try again.");
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      this.dataService.deleteCustomer(customerId).catch((error) => {
+        console.error("Failed to delete customer:", error);
+        alert("Failed to delete customer. Please try again.");
       });
     }
   }
 
-  getCustomerCount(companyId: string): number {
-    return this.dataService.getCustomersByCompany(companyId).length;
-  }
-
-  getCustomerName = (customerId: string): string => {
-    const customer = this.dataService.getCustomerById(customerId);
-    return customer ? customer.name : "Unknown Customer";
-  };
-
-  getActivityName = (activityId: string): string => {
-    const activity = this.dataService.getActivityById(activityId);
-    return activity ? activity.name : "Unknown Activity";
-  };
-
-  navigateToCustomers(): void {
-    this.navigationService.navigateToCustomers();
-  }
-
-  filteredCompanies(): Company[] {
-    const term = this.filterName.trim().toLowerCase();
-    const companies = this.dataService.allCompanies();
-    if (!term) return companies;
-    return companies.filter((c) => c.name.toLowerCase().includes(term));
-  }
-
-  clearFilter(): void {
-    this.filterName = "";
+  getProjectCount(customerId: string): number {
+    return this.dataService.getCompaniesByCustomer(customerId).length;
   }
 
   private resetForm(): void {
-    this.newCompany = {
+    this.newCustomer = {
       name: "",
       email: "",
       phone: "",
-      mobile: "",
-      mainAddress: "",
-      website: "",
-      activityId: "",
-      description: "",
-      customerId: "",
-      taxRegistrationNumber: "",
-      taxAuthority: "",
-      taxCardData: "",
-      commercialRegisterData: "",
-      importCardData: "",
-      exportCardData: "",
     };
   }
 }
