@@ -14,6 +14,30 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       <div class="header">
         <h2>Companies</h2>
         <div class="header-actions">
+          <div class="filter-control">
+            <input
+              type="text"
+              list="companyNames"
+              [(ngModel)]="filterName"
+              placeholder="Filter by company name"
+            />
+            <datalist id="companyNames">
+              @for (c of dataService.allCompanies(); track c.id) {
+              <option [value]="c.name"></option>
+              }
+            </datalist>
+            @if (filterName) {
+            <button
+              class="clear-filter"
+              type="button"
+              (click)="clearFilter()"
+              title="Clear filter"
+            >
+              ✖
+            </button>
+            }
+          </div>
+          
           <div class="view-toggle">
             <button
               class="toggle-btn"
@@ -32,6 +56,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
               ⊞
             </button>
           </div>
+
           <button class="btn btn-primary" (click)="toggleCreateForm()">
             ➕ Add Company
           </button>
@@ -238,7 +263,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
             </tr>
           </thead>
           <tbody>
-            @for (company of dataService.allCompanies(); track company.id) {
+            @for (company of filteredCompanies(); track company.id) {
             <tr class="table-row" (click)="selectCompany(company)">
               <td class="company-name">
                 <strong>{{ company.name }}</strong>
@@ -293,7 +318,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       </div>
       } @if (viewMode === 'cards') {
       <div class="companies-grid">
-        @for (company of dataService.allCompanies(); track company.id) {
+        @for (company of filteredCompanies(); track company.id) {
         <div class="company-card" (click)="selectCompany(company)">
           <div class="company-header">
             <div class="company-info">
@@ -312,7 +337,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
                 {{ company.isActive ? "Active" : "Inactive" }}
               </span>
             </div>
-          </div>          
+          </div>
 
           <div class="company-stats">
             <div class="stat">
@@ -412,6 +437,39 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       .toggle-btn.active {
         background: var(--primary);
         color: white;
+      }
+
+      .filter-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--surface-elevated);
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      .filter-control input[type="text"] {
+        border: none;
+        background: transparent;
+        padding: 0.4rem 0.5rem;
+        outline: none;
+        min-width: 220px;
+        color: var(--text-primary);
+      }
+
+      .clear-filter {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-radius: 6px;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .clear-filter:hover {
+        background: var(--surface);
+        color: var(--text-primary);
       }
 
       .create-form {
@@ -795,6 +853,7 @@ export class CompanyListComponent {
 
   viewMode: "table" | "cards" = "cards";
   showCreateForm = false;
+  filterName = "";
   newCompany: CreateCompanyRequest = {
     name: "",
     email: "",
@@ -888,6 +947,17 @@ export class CompanyListComponent {
 
   navigateToCustomers(): void {
     this.navigationService.navigateToCustomers();
+  }
+
+  filteredCompanies(): Company[] {
+    const term = this.filterName.trim().toLowerCase();
+    const companies = this.dataService.allCompanies();
+    if (!term) return companies;
+    return companies.filter((c) => c.name.toLowerCase().includes(term));
+  }
+
+  clearFilter(): void {
+    this.filterName = "";
   }
 
   private resetForm(): void {
