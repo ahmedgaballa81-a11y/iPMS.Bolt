@@ -231,8 +231,6 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
             <tr>
               <th>Company Name</th>
               <th>Customer</th>
-              <th>Email</th>
-              <th>Phone</th>
               <th>Activity</th>
               <th>Projects</th>
               <th>Status</th>
@@ -246,8 +244,6 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
                 <strong>{{ company.name }}</strong>
               </td>
               <td>{{ getCustomerName(company.customerId) }}</td>
-              <td class="email-cell">{{ company.email }}</td>
-              <td>{{ company.phone || "-" }}</td>
               <td>
                 @if (company.activityId) {
                 <span class="industry-tag">{{
@@ -305,7 +301,6 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
               <p class="customer-name">
                 {{ getCustomerName(company.customerId) }}
               </p>
-              <p class="email">{{ company.email }}</p>
               @if (company.activityId) {
               <span class="industry-tag">{{
                 getActivityName(company.activityId)
@@ -317,13 +312,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
                 {{ company.isActive ? "Active" : "Inactive" }}
               </span>
             </div>
-          </div>
-
-          @if (company.description) {
-          <div class="company-description">
-            <p>{{ company.description }}</p>
-          </div>
-          }
+          </div>          
 
           <div class="company-stats">
             <div class="stat">
@@ -558,7 +547,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
 
       .companies-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 1.5rem;
       }
 
