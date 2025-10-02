@@ -227,29 +227,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
             </div>
           </div>
 
-          <div class="company-details">
-            @if (company.phone) {
-            <div class="detail-item">
-              <span class="icon">📞</span>
-              <span class="value">{{ company.phone }}</span>
-            </div>
-            } @if (company.website) {
-            <div class="detail-item">
-              <span class="icon">🌐</span>
-              <span class="value">{{ company.website }}</span>
-            </div>
-            } @if (company.mobile) {
-            <div class="detail-item">
-              <span class="icon">📱</span>
-              <span class="value">{{ company.mobile }}</span>
-            </div>
-            } @if (company.mainAddress) {
-            <div class="detail-item">
-              <span class="icon">📍</span>
-              <span class="value">{{ company.mainAddress }}</span>
-            </div>
-            }
-          </div>
+          
 
           @if (company.description) {
           <div class="company-description">
@@ -379,14 +357,14 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
 
       .companies-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
         gap: 1.5rem;
       }
 
       .company-card {
         background: var(--surface);
         border-radius: 12px;
-        padding: 2rem;
+        padding: 1rem;
         box-shadow: var(--shadow-sm);
         border: 1px solid var(--border);
         cursor: pointer;
@@ -404,13 +382,13 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
       }
 
       .company-info h3 {
         margin: 0 0 0.5rem 0;
         color: var(--text-primary);
-        font-size: 1.3rem;
+        font-size: 1.1rem;
       }
 
       .company-info .email {
@@ -422,7 +400,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       .company-info .customer-name {
         margin: 0 0 0.5rem 0;
         color: var(--secondary);
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 500;
       }
 
@@ -450,14 +428,14 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       }
 
       .company-details {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
       }
 
       .detail-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
       }
 
       .detail-item .value {
@@ -467,9 +445,9 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
 
       .company-description {
         background: var(--surface-elevated);
-        padding: 1rem;
+        padding: 0.5rem;
         border-radius: 8px;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
       }
 
       .company-description p {
@@ -477,14 +455,18 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
         color: var(--text-secondary);
         font-style: italic;
         line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       .company-stats {
         display: flex;
-        gap: 2rem;
-        padding-top: 1rem;
+        gap: 1rem;
+        padding-top: 0.5rem;
         border-top: 1px solid var(--border);
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
       }
 
       .stat {
@@ -494,7 +476,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
       }
 
       .stat .count {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--primary);
       }
@@ -508,7 +490,7 @@ import { Company, CreateCompanyRequest } from "../../models/company.model";
 
       .company-actions {
         position: absolute;
-        top: 1rem;
+        bottom: 1rem;
         right: 1rem;
         display: flex;
         gap: 0.5rem;
