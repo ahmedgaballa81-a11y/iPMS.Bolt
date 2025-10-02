@@ -1,0 +1,52 @@
+<div class="container">
+  <header class="header">
+    <h1>{{ title }}</h1>
+    <p class="time">Current Time: {{ currentTime | date:'medium' }}</p>
+  </header>
+
+  <main class="main-content">
+    <section class="welcome-section">
+      <h2>Welcome to Angular!</h2>
+      <p>This is a simple Angular application demonstrating basic concepts.</p>
+    </section>
+
+    <section class="features-section">
+      <h3>Features Demonstrated:</h3>
+      <ul class="features-list">
+        <li>✅ Standalone Components</li>
+        <li>✅ Data Binding</li>
+        <li>✅ Event Handling</li>
+        <li>✅ Pipes</li>
+        <li>✅ Conditional Rendering</li>
+      </ul>
+    </section>
+
+    <section class="tasks-section">
+      <h3>Task Manager</h3>
+      <div class="progress-bar">
+        <div 
+          class="progress-fill" 
+          [style.width.%]="(completedTasks / totalTasks) * 100">
+        </div>
+      </div>
+      <p class="progress-text">{{ completedTasks }} of {{ totalTasks }} tasks completed</p>
+      
+      <div class="tasks-list">
+        <div 
+          *ngFor="let task of tasks" 
+          class="task-item"
+          [class.completed]="task.completed">
+          <input 
+            type="checkbox" 
+            [checked]="task.completed"
+            (change)="toggleTask(task.id)">
+          <span class="task-name">{{ task.name }}</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built with Angular {{ '17' }}</p>
+  </footer>
+</div>
