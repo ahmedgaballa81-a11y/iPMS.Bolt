@@ -13,7 +13,7 @@ import { Customer, CreateCustomerRequest } from '../../models/customer.model';
   styles: [`
     .customer-list {
       padding: 2rem;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
