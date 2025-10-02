@@ -99,6 +99,39 @@ import { Customer, CreateCustomerRequest } from "../../models/customer.model";
         color: white;
       }
 
+      .filter-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--surface-elevated);
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      .filter-control input[type="text"] {
+        border: none;
+        background: transparent;
+        padding: 0.4rem 0.5rem;
+        outline: none;
+        min-width: 220px;
+        color: var(--text-primary);
+      }
+
+      .clear-filter {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-radius: 6px;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .clear-filter:hover {
+        background: var(--surface);
+        color: var(--text-primary);
+      }
+
       .create-form {
         margin-bottom: 2rem;
         max-height: 0;
@@ -420,6 +453,7 @@ export class CustomerListComponent {
 
   viewMode: "table" | "cards" = "cards";
   showCreateForm = false;
+  filterName = "";
   newCustomer: CreateCustomerRequest = {
     name: "",
     email: "",
@@ -454,6 +488,17 @@ export class CustomerListComponent {
 
   selectCustomer(customer: Customer): void {
     this.navigationService.navigateToCompanies(customer.id);
+  }
+
+  filteredCustomers(): Customer[] {
+    const term = this.filterName.trim().toLowerCase();
+    const customers = this.currentCustomers();
+    if (!term) return customers;
+    return customers.filter(c => c.name.toLowerCase().includes(term));
+  }
+
+  clearFilter(): void {
+    this.filterName = "";
   }
 
   editCustomer(customer: Customer, event: Event): void {
