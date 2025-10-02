@@ -17,21 +17,23 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
           <div class="view-toggle">
             <button
               class="toggle-btn"
-              [class.active]="viewMode() === 'cards'"
-              (click)="setViewMode('cards')"
+              [class.active]="viewMode() === 'table'"
+              (click)="setViewMode('table')"
+              title="Table View"
             >
-              🗂️ Cards
+              ☰
             </button>
             <button
               class="toggle-btn"
-              [class.active]="viewMode() === 'table'"
-              (click)="setViewMode('table')"
+              [class.active]="viewMode() === 'cards'"
+              (click)="setViewMode('cards')"
+              title="Card View"
             >
-              📋 Table
+              ⊞
             </button>
           </div>
           <button class="btn btn-primary" (click)="toggleCreateForm()">
-            ➕ Add Project
+            ➕ Add Project &nbsp;&nbsp;&nbsp;
           </button>
         </div>
       </div>
@@ -151,61 +153,68 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
           <form (ngSubmit)="createProject()">
             <div class="form-group">
               <label for="customer">Customer *</label>
-              <select 
-                id="customer" 
+              <select
+                id="customer"
                 [ngModel]="newProject().customerId"
                 (ngModelChange)="updateNewProject('customerId', $event)"
-                name="customer" 
-                required>
+                name="customer"
+                required
+              >
                 <option value="">Select Customer</option>
                 @for (customer of allCustomers(); track customer.id) {
-                  <option [value]="customer.id">{{ customer.name }}</option>
+                <option [value]="customer.id">{{ customer.name }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
               <label for="company">Company *</label>
-              <select 
-                id="company" 
+              <select
+                id="company"
                 [ngModel]="newProject().companyId"
                 (ngModelChange)="updateNewProject('companyId', $event)"
-                name="company" 
-                required>
+                name="company"
+                required
+              >
                 <option value="">Select Company</option>
-                @for (company of getCompaniesByCustomer(newProject().customerId); track company.id) {
-                  <option [value]="company.id">{{ company.name }}</option>
+                @for (company of
+                getCompaniesByCustomer(newProject().customerId); track
+                company.id) {
+                <option [value]="company.id">{{ company.name }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
               <label for="title">Title *</label>
-              <input 
-                type="text" 
-                id="title" 
+              <input
+                type="text"
+                id="title"
                 [ngModel]="newProject().title"
                 (ngModelChange)="updateNewProject('title', $event)"
-                name="title" 
-                required>
+                name="title"
+                required
+              />
             </div>
             <div class="form-group">
               <label for="description">Description *</label>
-              <textarea 
-                id="description" 
+              <textarea
+                id="description"
                 [ngModel]="newProject().description"
                 (ngModelChange)="updateNewProject('description', $event)"
-                name="description" 
+                name="description"
                 required
-                rows="3"></textarea>
+                rows="3"
+              ></textarea>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label for="priority">Priority *</label>
-                <select 
-                  id="priority" 
+                <select
+                  id="priority"
                   [ngModel]="newProject().priority"
                   (ngModelChange)="updateNewProject('priority', $event)"
-                  name="priority" 
-                  required>
+                  name="priority"
+                  required
+                >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -214,40 +223,47 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
               </div>
               <div class="form-group">
                 <label for="expectedCost">Expected Cost *</label>
-                <input 
-                  type="number" 
-                  id="expectedCost" 
+                <input
+                  type="number"
+                  id="expectedCost"
                   [ngModel]="newProject().expectedCost"
                   (ngModelChange)="updateNewProject('expectedCost', $event)"
-                  name="expectedCost" 
+                  name="expectedCost"
                   min="0"
                   step="100"
-                  required>
+                  required
+                />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label for="startDate">Start Date</label>
-                <input 
-                  type="date" 
-                  id="startDate" 
+                <input
+                  type="date"
+                  id="startDate"
                   [ngModel]="startDateString()"
                   (ngModelChange)="startDateString.set($event)"
-                  name="startDate">
+                  name="startDate"
+                />
               </div>
               <div class="form-group">
                 <label for="expectedEndDate">Expected End Date *</label>
-                <input 
-                  type="date" 
-                  id="expectedEndDate" 
+                <input
+                  type="date"
+                  id="expectedEndDate"
                   [ngModel]="expectedEndDateString()"
                   (ngModelChange)="expectedEndDateString.set($event)"
-                  name="expectedEndDate" 
-                  required>
+                  name="expectedEndDate"
+                  required
+                />
               </div>
             </div>
             <div class="form-actions">
-              <button type="button" class="btn btn-secondary" (click)="toggleCreateForm()">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="toggleCreateForm()"
+              >
                 Cancel
               </button>
               <button type="submit" class="btn btn-primary">
@@ -265,33 +281,36 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
           <form (ngSubmit)="updateProject()">
             <div class="form-group">
               <label for="editTitle">Title *</label>
-              <input 
-                type="text" 
-                id="editTitle" 
+              <input
+                type="text"
+                id="editTitle"
                 [ngModel]="editingProject().title"
                 (ngModelChange)="updateEditingProject('title', $event)"
-                name="editTitle" 
-                required>
+                name="editTitle"
+                required
+              />
             </div>
             <div class="form-group">
               <label for="editDescription">Description *</label>
-              <textarea 
-                id="editDescription" 
+              <textarea
+                id="editDescription"
                 [ngModel]="editingProject().description"
                 (ngModelChange)="updateEditingProject('description', $event)"
-                name="editDescription" 
+                name="editDescription"
                 required
-                rows="3"></textarea>
+                rows="3"
+              ></textarea>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label for="editPriority">Priority *</label>
-                <select 
-                  id="editPriority" 
+                <select
+                  id="editPriority"
                   [ngModel]="editingProject().priority"
                   (ngModelChange)="updateEditingProject('priority', $event)"
-                  name="editPriority" 
-                  required>
+                  name="editPriority"
+                  required
+                >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -300,40 +319,47 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
               </div>
               <div class="form-group">
                 <label for="editExpectedCost">Expected Cost *</label>
-                <input 
-                  type="number" 
-                  id="editExpectedCost" 
+                <input
+                  type="number"
+                  id="editExpectedCost"
                   [ngModel]="editingProject().expectedCost"
                   (ngModelChange)="updateEditingProject('expectedCost', $event)"
-                  name="editExpectedCost" 
+                  name="editExpectedCost"
                   min="0"
                   step="100"
-                  required>
+                  required
+                />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label for="editStartDate">Start Date</label>
-                <input 
-                  type="date" 
-                  id="editStartDate" 
+                <input
+                  type="date"
+                  id="editStartDate"
                   [ngModel]="editStartDateString()"
                   (ngModelChange)="editStartDateString.set($event)"
-                  name="editStartDate">
+                  name="editStartDate"
+                />
               </div>
               <div class="form-group">
                 <label for="editExpectedEndDate">Expected End Date *</label>
-                <input 
-                  type="date" 
-                  id="editExpectedEndDate" 
+                <input
+                  type="date"
+                  id="editExpectedEndDate"
                   [ngModel]="editExpectedEndDateString()"
                   (ngModelChange)="editExpectedEndDateString.set($event)"
-                  name="editExpectedEndDate" 
-                  required>
+                  name="editExpectedEndDate"
+                  required
+                />
               </div>
             </div>
             <div class="form-actions">
-              <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelEdit()"
+              >
                 Cancel
               </button>
               <button type="submit" class="btn btn-primary">
@@ -349,21 +375,27 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
         <div class="status-card">
           <div class="status-icon not-started">🕒</div>
           <div class="status-info">
-            <span class="count">{{ getProjectCountByStatus("not-started") }}</span>
+            <span class="count">{{
+              getProjectCountByStatus("not-started")
+            }}</span>
             <span class="label">Not Started</span>
           </div>
         </div>
         <div class="status-card">
           <div class="status-icon in-progress">🚀</div>
           <div class="status-info">
-            <span class="count">{{ getProjectCountByStatus("in-progress") }}</span>
+            <span class="count">{{
+              getProjectCountByStatus("in-progress")
+            }}</span>
             <span class="label">In Progress</span>
           </div>
         </div>
         <div class="status-card">
           <div class="status-icon completed">✅</div>
           <div class="status-info">
-            <span class="count">{{ getProjectCountByStatus("completed") }}</span>
+            <span class="count">{{
+              getProjectCountByStatus("completed")
+            }}</span>
             <span class="label">Completed</span>
           </div>
         </div>
@@ -413,11 +445,15 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
           <div class="project-client-info">
             <div class="client-item">
               <span class="client-label">Customer:</span>
-              <span class="client-name">{{ getCustomerName(project.customerId) }}</span>
+              <span class="client-name">{{
+                getCustomerName(project.customerId)
+              }}</span>
             </div>
             <div class="client-item">
               <span class="client-label">Company:</span>
-              <span class="client-name">{{ getCompanyName(project.companyId) }}</span>
+              <span class="client-name">{{
+                getCompanyName(project.companyId)
+              }}</span>
             </div>
           </div>
 
@@ -446,17 +482,23 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
             @if (project.startDate) {
             <div class="detail-row">
               <span class="label">Started:</span>
-              <span class="value">{{ project.startDate | date : "MMM d, y" }}</span>
+              <span class="value">{{
+                project.startDate | date : "MMM d, y"
+              }}</span>
             </div>
             }
             <div class="detail-row">
               <span class="label">Expected End:</span>
-              <span class="value">{{ project.expectedEndDate | date : "MMM d, y" }}</span>
+              <span class="value">{{
+                project.expectedEndDate | date : "MMM d, y"
+              }}</span>
             </div>
             @if (project.actualEndDate) {
             <div class="detail-row">
               <span class="label">Actual End:</span>
-              <span class="value">{{ project.actualEndDate | date : "MMM d, y" }}</span>
+              <span class="value">{{
+                project.actualEndDate | date : "MMM d, y"
+              }}</span>
             </div>
             }
             <div class="detail-row">
@@ -537,11 +579,15 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
                 <div class="project-client-info-table">
                   <div class="client-info-row">
                     <span class="client-label">Customer:</span>
-                    <span class="client-name">{{ getCustomerName(project.customerId) }}</span>
+                    <span class="client-name">{{
+                      getCustomerName(project.customerId)
+                    }}</span>
                   </div>
                   <div class="client-info-row">
                     <span class="client-label">Company:</span>
-                    <span class="client-name">{{ getCompanyName(project.companyId) }}</span>
+                    <span class="client-name">{{
+                      getCompanyName(project.companyId)
+                    }}</span>
                   </div>
                 </div>
               </td>
@@ -627,11 +673,12 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
               : "No projects yet."
           }}
         </p>
-        <button 
-          class="btn btn-primary" 
+        <button
+          class="btn btn-primary"
           (click)="toggleCreateForm()"
-          [class.btn-danger]="showCreateForm()">
-          {{ showCreateForm() ? 'Cancel' : 'Create New Project' }}
+          [class.btn-danger]="showCreateForm()"
+        >
+          {{ showCreateForm() ? "Cancel" : "Create New Project" }}
         </button>
       </div>
       }
@@ -650,8 +697,6 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
-        flex-wrap: wrap;
-        gap: 1rem;
       }
 
       .header h2 {
@@ -665,30 +710,31 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
         display: flex;
         gap: 1rem;
         align-items: center;
-        flex-wrap: wrap;
       }
 
       .view-toggle {
         display: flex;
+        gap: 0.5rem;
         background: var(--surface-elevated);
+        padding: 0.25rem;
         border-radius: 8px;
-        padding: 2px;
         border: 1px solid var(--border);
       }
 
       .toggle-btn {
-        background: none;
+        background: transparent;
         border: none;
         padding: 0.5rem 1rem;
         border-radius: 6px;
         cursor: pointer;
-        font-size: 0.9rem;
-        font-weight: 500;
+        font-size: 1.2rem;
         color: var(--text-secondary);
         transition: all 0.2s;
-        display: flex; /* Added for icon alignment */
-        align-items: center; /* Added for icon alignment */
-        gap: 0.5rem; /* Added for spacing between icon and text */
+      }
+
+      .toggle-btn:hover {
+        background: var(--surface);
+        color: var(--text-primary);
       }
 
       .toggle-btn.active {
@@ -864,7 +910,10 @@ import { Project, CreateProjectRequest } from "../../models/project.model";
 
       .projects-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Decreased min-width here */
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(280px, 1fr)
+        ); /* Decreased min-width here */
         gap: 1.5rem;
       }
 
@@ -1440,21 +1489,21 @@ export class AllProjectsComponent {
   editingProjectId = signal<string | null>(null); // New signal to store the ID of the project being edited
 
   newProject = signal<CreateProjectRequest>({
-    title: '',
-    description: '',
-    priority: 'medium',
+    title: "",
+    description: "",
+    priority: "medium",
     expectedCost: 0,
     expectedEndDate: new Date(),
-    customerId: '',
-    companyId: ''
+    customerId: "",
+    companyId: "",
   });
 
   editingProject = signal<Partial<Project>>({}); // New signal for the project being edited
 
-  startDateString = signal('');
-  expectedEndDateString = signal('');
-  editStartDateString = signal(''); // New signal for edit form start date
-  editExpectedEndDateString = signal(''); // New signal for edit form expected end date
+  startDateString = signal("");
+  expectedEndDateString = signal("");
+  editStartDateString = signal(""); // New signal for edit form start date
+  editExpectedEndDateString = signal(""); // New signal for edit form expected end date
 
   readonly allCustomers = computed(() => this.dataService.allCustomers());
   readonly allCompanies = computed(() => this.dataService.allCompanies());
@@ -1519,8 +1568,12 @@ export class AllProjectsComponent {
     if (this.projectFilter()) {
       projects = projects.filter(
         (project) =>
-          project.title.toLowerCase().includes(this.projectFilter().toLowerCase()) ||
-          project.description.toLowerCase().includes(this.projectFilter().toLowerCase())
+          project.title
+            .toLowerCase()
+            .includes(this.projectFilter().toLowerCase()) ||
+          project.description
+            .toLowerCase()
+            .includes(this.projectFilter().toLowerCase())
       );
     }
 
@@ -1549,7 +1602,7 @@ export class AllProjectsComponent {
   }
 
   toggleCreateForm(): void {
-    this.showCreateForm.update(current => !current);
+    this.showCreateForm.update((current) => !current);
     this.showEditForm.set(false); // Hide edit form if create is opened
     if (!this.showCreateForm()) {
       this.resetForm();
@@ -1557,37 +1610,47 @@ export class AllProjectsComponent {
   }
 
   updateNewProject(field: keyof CreateProjectRequest, value: any): void {
-    this.newProject.update(current => ({ ...current, [field]: value }));
+    this.newProject.update((current) => ({ ...current, [field]: value }));
   }
 
   updateEditingProject(field: string, value: any): void {
-    this.editingProject.update(current => ({ ...current, [field]: value }));
+    this.editingProject.update((current) => ({ ...current, [field]: value }));
   }
 
   createProject(): void {
     const project = this.newProject();
 
-    if (!project.title || !project.description || !project.customerId || !project.companyId) {
-      alert('Please fill in all required fields');
+    if (
+      !project.title ||
+      !project.description ||
+      !project.customerId ||
+      !project.companyId
+    ) {
+      alert("Please fill in all required fields");
       return;
     }
 
-    const startDate = this.startDateString() ? new Date(this.startDateString()) : undefined;
+    const startDate = this.startDateString()
+      ? new Date(this.startDateString())
+      : undefined;
     const expectedEndDate = new Date(this.expectedEndDateString());
 
     const projectData: CreateProjectRequest = {
       ...project,
       startDate,
-      expectedEndDate
+      expectedEndDate,
     };
 
-    this.dataService.createProject(projectData).then(() => {
-      this.resetForm();
-      this.toggleCreateForm();
-    }).catch(error => {
-      console.error('Failed to create project:', error);
-      alert('Failed to create project. Please try again.');
-    });
+    this.dataService
+      .createProject(projectData)
+      .then(() => {
+        this.resetForm();
+        this.toggleCreateForm();
+      })
+      .catch((error) => {
+        console.error("Failed to create project:", error);
+        alert("Failed to create project. Please try again.");
+      });
   }
 
   getCompaniesByCustomer(customerId: string): any[] {
@@ -1597,16 +1660,16 @@ export class AllProjectsComponent {
 
   resetForm(): void {
     this.newProject.set({
-      title: '',
-      description: '',
-      priority: 'medium',
+      title: "",
+      description: "",
+      priority: "medium",
       expectedCost: 0,
       expectedEndDate: new Date(),
-      customerId: '',
-      companyId: ''
+      customerId: "",
+      companyId: "",
     });
-    this.startDateString.set('');
-    this.expectedEndDateString.set('');
+    this.startDateString.set("");
+    this.expectedEndDateString.set("");
   }
 
   hasFilters(): boolean {
@@ -1664,8 +1727,12 @@ export class AllProjectsComponent {
     this.showEditForm.set(true);
 
     // Set date strings for form inputs
-    this.editStartDateString.set(project.startDate ? project.startDate.toISOString().split('T')[0] : '');
-    this.editExpectedEndDateString.set(project.expectedEndDate.toISOString().split('T')[0]);
+    this.editStartDateString.set(
+      project.startDate ? project.startDate.toISOString().split("T")[0] : ""
+    );
+    this.editExpectedEndDateString.set(
+      project.expectedEndDate.toISOString().split("T")[0]
+    );
   }
 
   updateProject(): void {
@@ -1673,33 +1740,38 @@ export class AllProjectsComponent {
     const projectId = this.editingProjectId();
 
     if (!projectId || !project.title || !project.description) {
-      alert('Please fill in all required fields');
+      alert("Please fill in all required fields");
       return;
     }
 
-    const startDate = this.editStartDateString() ? new Date(this.editStartDateString()) : undefined;
+    const startDate = this.editStartDateString()
+      ? new Date(this.editStartDateString())
+      : undefined;
     const expectedEndDate = new Date(this.editExpectedEndDateString());
 
     const updatedProject: Partial<Project> = {
       ...project,
       startDate,
-      expectedEndDate
+      expectedEndDate,
     };
 
-    this.dataService.updateProject(projectId, updatedProject).then(() => {
-      this.cancelEdit();
-    }).catch(error => {
-      console.error('Failed to update project:', error);
-      alert('Failed to update project. Please try again.');
-    });
+    this.dataService
+      .updateProject(projectId, updatedProject)
+      .then(() => {
+        this.cancelEdit();
+      })
+      .catch((error) => {
+        console.error("Failed to update project:", error);
+        alert("Failed to update project. Please try again.");
+      });
   }
 
   cancelEdit(): void {
     this.showEditForm.set(false);
     this.editingProject.set({});
     this.editingProjectId.set(null);
-    this.editStartDateString.set('');
-    this.editExpectedEndDateString.set('');
+    this.editStartDateString.set("");
+    this.editExpectedEndDateString.set("");
   }
 
   deleteProject(projectId: string, event: Event): void {
